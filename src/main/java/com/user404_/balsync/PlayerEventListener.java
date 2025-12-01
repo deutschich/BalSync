@@ -21,7 +21,7 @@ public class PlayerEventListener implements Listener {
             if (event.getPlayer().isOnline()) {
                 balanceManager.loadPlayerBalance(event.getPlayer());
             }
-        }, 40L); // 20 Ticks = 1 Sekunde, 40 Ticks = 2 Sekunden
+        }, 300L); // 20 Ticks = 1 Sekunde, 300 Ticks = 15 Sekunden
     }
 
     @EventHandler
