@@ -1,16 +1,4 @@
-# Database Configuration
-database:
-  host: "localhost"
-  port: 3306
-  database: "minecraft"
-  username: "root"
-  password: "password"
-  use-ssl: false
-  connection-pool:
-    maximum-pool-size: 10
-    minimum-idle: 5
-    connection-timeout: 30000
-    idle-timeout: 600000
+# Database Configuration (existing)...
 
 # Plugin Settings
 settings:
@@ -22,6 +10,18 @@ settings:
   starting-balance: 100.0
   # Locale for messages (en, de, etc.)
   locale: "en"
+
+  # Reset to zero before loading from database on join
+  reset-on-join: false
+
+  # Monitor offline balance changes when auto-save-interval = 0
+  monitor-offline-changes: true
+
+  # Poll database for changes (interval in seconds, 0 = disabled)
+  db-poll-interval: 10
+
+  # Notification when balance is changed externally
+  notify-on-external-change: true
 
 # Database Table Configuration
 tables:

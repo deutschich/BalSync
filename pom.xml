@@ -6,7 +6,7 @@
 
     <groupId>com.user404_</groupId>
     <artifactId>BalSync</artifactId>
-    <version>1.0-beta</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>BalSync</name>

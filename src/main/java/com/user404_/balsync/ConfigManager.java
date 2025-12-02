@@ -121,4 +121,19 @@ public class ConfigManager {
     public String getTableName() {
         return config.getString("tables.player_balances.table-name", "player_balances");
     }
+    public boolean isResetOnJoin() {
+        return config.getBoolean("settings.reset-on-join", false);
+    }
+
+    public boolean monitorOfflineChanges() {
+        return config.getBoolean("settings.monitor-offline-changes", true);
+    }
+
+    public int getDbPollInterval() {
+        return config.getInt("settings.db-poll-interval", 10);
+    }
+
+    public boolean notifyOnExternalChange() {
+        return config.getBoolean("settings.notify-on-external-change", true);
+    }
 }

@@ -34,6 +34,7 @@ public class BalSyncCommand implements CommandExecutor {
                 break;
 
             case "save":
+                // Save all balances - Methode ist jetzt in BalanceManager
                 balanceManager.saveAllBalances();
                 sender.sendMessage(plugin.getTranslationManager().formatMessage("balance-saved"));
                 break;
@@ -46,11 +47,23 @@ public class BalSyncCommand implements CommandExecutor {
                 }
                 break;
 
+            case "status":
+                sendStatusInfo(sender);
+                break;
+
             default:
                 sender.sendMessage(plugin.getTranslationManager().formatMessage("usage"));
                 break;
         }
 
         return true;
+    }
+
+    private void sendStatusInfo(CommandSender sender) {
+        sender.sendMessage("§6=== BalSync Status ===");
+        sender.sendMessage("§7Auto-save interval: §e" + plugin.getConfigManager().getAutoSaveInterval() + "s");
+        sender.sendMessage("§7Database polling: §e" + plugin.getConfigManager().getDbPollInterval() + "s");
+        sender.sendMessage("§7Reset on join: §e" + plugin.getConfigManager().isResetOnJoin());
+        sender.sendMessage("§7Offline monitoring: §e" + plugin.getConfigManager().monitorOfflineChanges());
     }
 }

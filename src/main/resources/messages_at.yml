@@ -1,0 +1,15 @@
+# This is an Easter egg language. If you found this, you're probably digging through the source code.
+# Have fun with the Austrian/Wienerisch translation! :)
+
+prefix: "§8[§dGödSynk§8] §7"
+no-permission: "§cHeast, du host ka Berechtigung für den Befehl!"
+config-reloaded: "§aKonfig is wieda gscheit neig'laden!"
+balance-loaded: "§aDei Gödstandl is jetzt mit da Datenbank a glei."
+balance-saved: "§aOlle Gödstandln woan in da Datenbank gspeichert, passt so!"
+database-connected: "§aJo fix, Verbindung zur Datenbank steht!"
+database-error: "§cOida… do is a Fehler in da Datenbank. Schau amoi in die Konsole."
+player-not-found: "§cDen Spieler find i net, host di vertippt?"
+usage: "§cSo geht's: /balsync [reload|save|load]"
+balance-external-change: "§eDei Gödstandl woan von außen gändat: §6{old} §e→ §6{new}"
+balance-reset: "§aDei Gödstandl woan auf §e${0}§a zruckgsetzt, bevors aus da Datenbank kema san."
+offline-change-detected: "§7A Änderung währendst ned do woarst is gmerkt und gspeichert wordn."
