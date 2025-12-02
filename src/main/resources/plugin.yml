@@ -1,0 +1,20 @@
+name: BalSync
+version: 1.0
+main: com.user404_.balsync.BalSyncPlugin
+api-version: '1.20'
+description: Synchronizes player balances with MySQL database
+author: user404_
+website: https://deutschich.github.io/BalSync
+
+depend: [Vault]
+
+commands:
+  balsync:
+    description: Main command for BalSync
+    usage: /<command> [reload|save|load]
+    permission: balsync.admin
+
+permissions:
+  balsync.admin:
+    description: Allows access to all BalSync commands
+    default: op

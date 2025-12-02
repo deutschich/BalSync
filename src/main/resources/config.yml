@@ -1,0 +1,32 @@
+# Database Configuration (existing)...
+
+# Plugin Settings
+settings:
+  # Auto-save interval in seconds (0 to disable)
+  auto-save-interval: 60
+  # Whether to save on player quit
+  save-on-quit: true
+  # Starting balance for new players
+  starting-balance: 100.0
+  # Locale for messages (en, de, etc.)
+  locale: "en"
+
+  # Reset to zero before loading from database on join
+  reset-on-join: false
+
+  # Monitor offline balance changes when auto-save-interval = 0
+  monitor-offline-changes: true
+
+  # Poll database for changes (interval in seconds, 0 = disabled)
+  db-poll-interval: 10
+
+  # Notification when balance is changed externally
+  notify-on-external-change: true
+
+# Database Table Configuration
+tables:
+  player_balances:
+    table-name: "player_balances"
+    uuid-column: "player_uuid"
+    balance-column: "balance"
+    last-updated-column: "last_updated"
