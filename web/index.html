@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BalSync - Synchronize Minecraft Player Balances Across Servers</title>
+    <meta name="description" content="BalSync is an open-source Minecraft plugin that synchronizes player balances (via Vault) across multiple servers using a MySQL/MariaDB database.">
+    <meta name="keywords" content="Minecraft, Plugin, BalSync, Balance, Sync, Economy, Vault, MySQL, Database, Spigot, Paper, Open Source">
+    <meta name="author" content="BalSync">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0f172a;
+            --secondary-dark: #1e293b;
+            --accent-green: #10b981;
+            --accent-green-hover: #34d399;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+            --card-bg: rgba(30, 41, 59, 0.7);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        /* Header & Navigation */
+        header {
+            background-color: var(--secondary-dark);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 20px;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            border-radius: 4px;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+        }
+        .nav-links a:hover {
+            color: var(--accent-green);
+        }
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0;
+            text-align: center;
+            background: linear-gradient(180deg, var(--primary-dark) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #f1f5f9, var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+        .tag {
+            display: inline-block;
+            background-color: var(--accent-green);
+            color: var(--primary-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--accent-green);
+            color: var(--primary-dark);
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .cta-button:hover {
+            background-color: transparent;
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+        /* Sections */
+        section {
+            padding: 4rem 0;
+        }
+        section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-green);
+            border-radius: 2px;
+        }
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .feature-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-green);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-green);
+        }
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        /* Config & Commands */
+        .config-demo, .commands-demo {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+        .config-key {
+            color: var(--accent-green);
+        }
+        .config-value {
+            color: #60a5fa;
+        }
+        .config-comment {
+            color: #94a3b8;
+        }
+        .command {
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+        .command-desc {
+            color: var(--text-secondary);
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 2px solid var(--border-color);
+        }
+        /* Download Section */
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .download-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .download-card:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-3px);
+        }
+        .platform-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .platform-name {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .download-link {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--accent-green);
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 2px solid var(--accent-green);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .download-link:hover {
+            background-color: var(--accent-green);
+            color: var(--primary-dark);
+        }
+        .placeholder-note {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        /* Footer */
+        footer {
+            background-color: var(--secondary-dark);
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-links a:hover {
+            color: var(--accent-green);
+        }
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--secondary-dark);
+                padding: 1rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            section h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="container">
+                <a href="#" class="logo">
+                    <span class="logo-icon"></span>
+                    BalSync
+                </a>
+                <button class="mobile-toggle" id="mobileToggle">☰</button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#commands">Commands</a></li>
+                    <li><a href="#configuration">Configuration</a></li>
+                    <li><a href="#download">Download</a></li>
+                    <li><a href="https://github.com/deutschich/balsync" target="_blank">GitHub</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <span class="tag">OPEN SOURCE</span>
+                <h1>Synchronize Minecraft Economies</h1>
+                <p>BalSync is a powerful, open-source Minecraft plugin that keeps player balances in perfect harmony across multiple servers using a central MySQL/MariaDB database and Vault.</p>
+                <a href="#download" class="cta-button">
+                    <span>Download Now</span>
+                    <span>↓</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="container">
+                <h2>Plugin Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Cross-Server Sync</h3>
+                        <p>Keep player balances identical across your entire server network. Play on one server, have the same money on another.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💾</div>
+                        <h3>Database Backend</h3>
+                        <p>Utilizes a robust MySQL or MariaDB database for reliable, persistent storage of all balance data.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚙️</div>
+                        <h3>Vault Integration</h3>
+                        <p>Seamlessly integrates with the Vault economy API, the standard for Minecraft economy plugins.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3>Automated Management</h3>
+                        <p>Features configurable auto-save intervals and optional saving on player quit to ensure data integrity.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <h3>Multi-Language</h3>
+                        <p>Supports multiple locales for server messages, making it accessible to a global player base.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔓</div>
+                        <h3>Open Source</h3>
+                        <p>Full source code is available on GitHub. Transparent, customizable, and community-driven.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="commands">
+            <div class="container">
+                <h2>Commands & Usage</h2>
+                <div class="commands-demo">
+                    <p><span class="command">/balsync reload</span></p>
+                    <p class="command-desc">Reloads the plugin's configuration file without needing a server restart.</p>
+                    <p><span class="command">/balsync save</span></p>
+                    <p class="command-desc">Forces an immediate save of all player balances from server memory to the database.</p>
+                    <p><span class="command">/balsync load</span></p>
+                    <p class="command-desc">Forces an immediate load of all player balances from the database into server memory.</p>
+                    <p class="config-comment"># Permissions: balsync.admin</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="configuration">
+            <div class="container">
+                <h2>Configuration</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: var(--text-secondary);">BalSync is highly configurable. Here's the default <code>config.yml</code> structure:</p>
+                <div class="config-demo">
+                    <p><span class="config-comment"># Database Configuration</span></p>
+                    <p><span class="config-key">database:</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-key">host:</span> <span class="config-value">"localhost"</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-key">port:</span> <span class="config-value">3306</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-key">database:</span> <span class="config-value">"minecraft"</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-key">username:</span> <span class="config-value">"root"</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-key">password:</span> <span class="config-value">"password"</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-key">use-ssl:</span> <span class="config-value">false</span></p>
+                    <br>
+                    <p><span class="config-comment"># Plugin Settings</span></p>
+                    <p><span class="config-key">settings:</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-comment"># Auto-save interval in seconds (0 to disable)</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-key">auto-save-interval:</span> <span class="config-value">60</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-comment"># Whether to save on player quit</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-key">save-on-quit:</span> <span class="config-value">true</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-key">starting-balance:</span> <span class="config-value">100.0</span></p>
+                    <p>&nbsp;&nbsp;<span class="config-key">locale:</span> <span class="config-value">"en"</span></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="download">
+            <div class="container">
+                <h2>Download BalSync</h2>
+                <p style="text-align: center; margin-bottom: 3rem; color: var(--text-secondary); max-width: 800px; margin-left: auto; margin-right: auto;">
+                    Download BalSync from your preferred platform. The plugin is compatible with Spigot, Paper, and other server software that supports the Vault API.
+                </p>
+                <div class="download-grid">
+                    <div class="download-card">
+                        <div class="platform-icon">🔧</div>
+                        <h3 class="platform-name">SpigotMC</h3>
+                        <p>The classic Minecraft plugin hub.</p>
+                        <a class="download-link">Coming Soon</a>
+                        <p class="placeholder-note">(Placeholder link)[citation:7]</p>
+                    </div>
+                    <div class="download-card">
+                        <div class="platform-icon">📦</div>
+                        <h3 class="platform-name">Modrinth</h3>
+                        <p>Discover, play, and share Minecraft content[citation:1].</p>
+                        <a class="download-link">Coming Soon</a>
+                        <p class="placeholder-note">(Placeholder link)[citation:7]</p>
+                    </div>
+                    <div class="download-card">
+                        <div class="platform-icon">📁</div>
+                        <h3 class="platform-name">GitHub</h3>
+                        <p>Source code, issues, and releases.</p>
+                        <a href="https://github.com/deutschich/balsync" target="_blank" class="download-link">View Source</a>
+                    </div>
+                    <div class="download-card">
+                        <div class="platform-icon">📄</div>
+                        <h3 class="platform-name">PaperMC Hangar</h3>
+                        <p>The best place to download Paper plugins[citation:3].</p>
+                        <a class="download-link">Coming Soon</a>
+                        <p class="placeholder-note">(Placeholder link)[citation:7]</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <a href="#" class="logo" style="justify-content: center; margin-bottom: 1.5rem;">
+                <span class="logo-icon"></span>
+                BalSync
+            </a>
+            <ul class="footer-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#commands">Commands</a></li>
+                <li><a href="#configuration">Config</a></li>
+                <li><a href="#download">Download</a></li>
+                <li><a href="https://github.com/deutschich/balsync" target="_blank">GitHub</a></li>
+            </ul>
+            <p class="copyright">
+                BalSync is an open-source project. Not an official Minecraft product. Minecraft is a trademark of Mojang AB.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.getElementById('navLinks');
+
+            mobileToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if(targetId === '#') return;
+
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        if(navLinks.classList.contains('active')) {
+                            navLinks.classList.remove('active');
+                        }
+                    }
+                });
+            });
+
+            const placeholderLinks = document.querySelectorAll('.download-link[href*="#"]');
+            placeholderLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    alert('Download link not yet configured. This is a placeholder. In a real implementation, this would link to the plugin page on the respective platform.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
