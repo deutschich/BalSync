@@ -3,7 +3,7 @@ name: Release on Merge to Master
 on:
   push:
     branches:
-      - master  # oder "main", je nach Repo
+      - main  # oder "main", je nach Repo
     paths-ignore:
       - '**.md'     # ignoriert reine Dokumentationsänderungen
       - '.github/**' # ignoriert Änderungen an Actions selbst
