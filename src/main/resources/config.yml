@@ -8,7 +8,7 @@ settings:
   save-on-quit: true
   # Starting balance for new players
   starting-balance: 100.0
-  # Locale for messages (en, de, etc.)
+  # Locale for messages (en, de, etc.), List of supported languages/locales can be found at https://github.com/deutschich/BalSync/wiki/Languages#supported-languages.
   locale: "en"
 
   # Reset to zero before loading from database on join
