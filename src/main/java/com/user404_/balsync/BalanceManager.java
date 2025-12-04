@@ -21,6 +21,7 @@ public class BalanceManager {
     private BukkitTask dbPollingTask;
     private final Map<UUID, Double> lastKnownBalances = new HashMap<>();
     private final Map<UUID, Double> lastKnownDbBalances = new HashMap<>();
+
     public void saveAllBalances() {
         plugin.getPluginLogger().info("Saving all player balances to database...");
 
@@ -43,6 +44,7 @@ public class BalanceManager {
             plugin.getPluginLogger().info("Saved " + saved + " player balances to database.");
         });
     }
+
     public BalanceManager(BalSyncPlugin plugin, Economy economy, DatabaseManager databaseManager) {
         this.plugin = plugin;
         this.economy = economy;
@@ -227,18 +229,32 @@ public class BalanceManager {
 
                 Double lastBalance = lastKnownBalances.get(uuid);
                 if (lastBalance != null && Math.abs(currentBalance - lastBalance) > 0.001) {
-                    // Balance has changed - save to database
+                    // Balance has changed on this server. Instead of overwriting the DB with
+                    // a stale server value, compute the delta and apply that to the DB.
+                    double delta = currentBalance - lastBalance;
                     try {
-                        databaseManager.saveBalance(uuid, offlinePlayer.getName(), currentBalance);
+                        databaseManager.addBalanceDelta(uuid, offlinePlayer.getName(), delta);
+
+                        // Refresh DB snapshot for tracking
+                        double newDbBalance = databaseManager.getBalance(uuid);
+
                         lastKnownBalances.put(uuid, currentBalance);
+                        lastKnownDbBalances.put(uuid, newDbBalance);
+
                         plugin.getLogger().info("Detected offline change for " +
-                                offlinePlayer.getName() + ": " + currentBalance);
+                                offlinePlayer.getName() + ": serverDelta=" + delta + ", newDB=" + newDbBalance);
+
+                        // Optional: send configured offline-change message to console/log
+                        String msg = plugin.getTranslationManager().getMessage("offline-change-detected");
+                        if (msg != null && !msg.isEmpty()) {
+                            plugin.getLogger().info(plugin.getTranslationManager().formatMessage("prefix") + msg);
+                        }
                     } catch (SQLException e) {
-                        plugin.getLogger().log(Level.WARNING,
+                        plugin.getPluginLogger().log(Level.WARNING,
                                 "Failed to save offline change for " + offlinePlayer.getName(), e);
                     }
                 } else if (lastBalance == null) {
-                    // First time seeing this player, store initial balance
+                    // First time seeing this player on this server, store initial balance
                     lastKnownBalances.put(uuid, currentBalance);
                 }
             }
@@ -264,6 +280,23 @@ public class BalanceManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 double balance = economy.getBalance(player);
+                UUID uuid = player.getUniqueId();
+
+                Double lastBalance = lastKnownBalances.get(uuid);
+                if (lastBalance != null) {
+                    // There is a last-known server-side snapshot => compute delta and apply it
+                    double delta = balance - lastBalance;
+                    if (Math.abs(delta) > 0.001) {
+                        databaseManager.addBalanceDelta(uuid, player.getName(), delta);
+
+                        double newDb = databaseManager.getBalance(uuid);
+                        lastKnownBalances.put(uuid, balance);
+                        lastKnownDbBalances.put(uuid, newDb);
+                        return;
+                    }
+                }
+
+                // Fallback: overwrite DB with current balance
                 databaseManager.saveBalance(player.getUniqueId(), player.getName(), balance);
                 lastKnownBalances.put(player.getUniqueId(), balance);
                 lastKnownDbBalances.put(player.getUniqueId(), balance);

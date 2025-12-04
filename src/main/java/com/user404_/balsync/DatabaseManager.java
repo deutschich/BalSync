@@ -64,7 +64,7 @@ public class DatabaseManager {
                         "`id` INT AUTO_INCREMENT PRIMARY KEY, " +
                         "`player_uuid` CHAR(36) UNIQUE NOT NULL, " +
                         "`player_name` VARCHAR(16), " +
-                        "`balance` DECIMAL(15, 2) NOT NULL DEFAULT %.2f, " + // DECIMAL für bessere Präzision
+                        "`balance` DECIMAL(15, 2) NOT NULL DEFAULT %.2f, " +
                         "`last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, " +
                         "INDEX `idx_uuid` (`player_uuid`)" +
                         ") CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB",
@@ -111,7 +111,7 @@ public class DatabaseManager {
                         "`id` INT AUTO_INCREMENT PRIMARY KEY, " +
                         "`player_uuid` CHAR(36) UNIQUE NOT NULL, " +
                         "`player_name` VARCHAR(16), " +
-                        "`balance` DECIMAL(15, 2) NOT NULL, " + // Kein DEFAULT hier
+                        "`balance` DECIMAL(15, 2) NOT NULL, " +
                         "`last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, " +
                         "INDEX `idx_uuid` (`player_uuid`)" +
                         ") CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB",
@@ -155,6 +155,36 @@ public class DatabaseManager {
             stmt.setString(2, playerName);
             stmt.setDouble(3, balance);
             stmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Atomically add a delta to the stored balance. This avoids overwriting the DB with stale
+     * values when multiple servers write concurrently. If no row exists, insert one with
+     * (startingBalance + delta).
+     */
+    public void addBalanceDelta(UUID playerUUID, String playerName, double delta) throws SQLException {
+        String updateSql = String.format("UPDATE %s SET balance = balance + ? WHERE player_uuid = ?", tableName);
+
+        try (Connection conn = dataSource.getConnection()) {
+            // Try atomic update first
+            try (PreparedStatement update = conn.prepareStatement(updateSql)) {
+                update.setDouble(1, delta);
+                update.setString(2, playerUUID.toString());
+                int affected = update.executeUpdate();
+
+                if (affected == 0) {
+                    // No row existed — insert with startingBalance + delta
+                    double starting = plugin.getConfigManager().getStartingBalance();
+                    String insertSql = String.format("INSERT INTO %s (player_uuid, player_name, balance) VALUES (?, ?, ?)", tableName);
+                    try (PreparedStatement insert = conn.prepareStatement(insertSql)) {
+                        insert.setString(1, playerUUID.toString());
+                        insert.setString(2, playerName);
+                        insert.setDouble(3, starting + delta);
+                        insert.executeUpdate();
+                    }
+                }
+            }
         }
     }
 
