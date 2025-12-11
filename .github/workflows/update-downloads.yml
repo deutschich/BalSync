@@ -1,0 +1,33 @@
+name: Update Downloads Badge
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # jede Stunde
+  workflow_dispatch:      # manuell startbar
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install canvas node-fetch
+
+      - name: Generate Badge
+        run: node scripts/generate_badge.js
+
+      - name: Commit Badge
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add badges/downloads.svg
+          git commit -m "Update downloads badge" || echo "No changes"
+          git push
