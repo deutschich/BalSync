@@ -4,6 +4,10 @@ BalSync is a powerful and reliable balance synchronization system for Minecraft 
 
 ---
 
+## Statistics:
+
+
+
 ## 🎯 Features
 
 ### Automatic Balance Backup
