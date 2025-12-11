@@ -31,8 +31,8 @@ function createBadge(total) {
 // ---- Gesamtdownloads berechnen ----
 
 (async () => {
-  const modrinth = await getModrinthDownloads("DEIN_MODRINTH_ID");
-  const github = await getGithubDownloads("DEINUSER", "DEINREPO");
+  const modrinth = await getModrinthDownloads("lWNvJAlY");
+  const github = await getGithubDownloads("deutschich", "BalSync");
 
   const total = modrinth + github;
 
