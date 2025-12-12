@@ -19,7 +19,7 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        run: npm install canvas node-fetch cheerio
+        run: npm install canvas node-fetch
 
       - name: Generate Badge
         run: node scripts/generate_badge.js
