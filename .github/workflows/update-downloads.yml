@@ -13,6 +13,9 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
+      - name: remove old file
+        run: rm -f badges/downloads.svg
+
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
