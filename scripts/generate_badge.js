@@ -49,7 +49,7 @@ async function getSpigotDownloads(pluginId) {
     const text = await res.text();
 
     // Beispiel: "Downloads: 12,345"
-    const match = text.match(/Downloads:\s*([\d,]+)/i);
+    const match = text.match(/Total Downloads:\s*([\d,]+)/i);
     if (!match) return 0;
 
     return parseInt(match[1].replace(/,/g, ""), 10);
