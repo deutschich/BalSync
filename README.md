@@ -6,7 +6,7 @@ BalSync is a powerful and reliable balance synchronization system for Minecraft 
 
 ## Statistics:
 
-![Total Downloads](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/deutschich/BalSync/main/badges/downloads.json) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/deutschich/BalSync/preview-release.yml?branch=dev&label=Preview%20Build&link=https%3A%2F%2Fgithub.com%2Fdeutschich%2FBalSync%2Ftags) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/deutschich/BalSync/release-on-merge.yml?branch=main&label=Stable%20Release%20Build&link=https%3A%2F%2Fgithub.com%2Fdeutschich%2FBalSync%2Freleases%2Flatest) ![GitHub Release](https://img.shields.io/github/v/release/deutschich/BalSync?display_name=tag&label=Download%20newest%20main%20Version&color=green&link=https%3A%2F%2Fgithub.com%2Fdeutschich%2FBalSync%2Flatest)
+![Total Downloads](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/deutschich/BalSync/main/badges/downloads.json) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/deutschich/BalSync/preview-release.yml?branch=dev&label=Preview%20Build&link=https%3A%2F%2Fgithub.com%2Fdeutschich%2FBalSync%2Ftags) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/deutschich/BalSync/release-on-merge.yml?branch=main&label=Stable%20Release%20Build&link=https%3A%2F%2Fgithub.com%2Fdeutschich%2FBalSync%2Freleases%2Flatest) ![GitHub Release](https://img.shields.io/github/v/release/deutschich/BalSync?display_name=tag&label=newest%20main%20Version&color=green&link=https%3A%2F%2Fgithub.com%2Fdeutschich%2FBalSync%2Flatest)
 
 
 
