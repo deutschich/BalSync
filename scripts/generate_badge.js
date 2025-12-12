@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const cheerio = require("cheerio");
 
 // ---- Hilfsfunktion für sichere Fetches ----
 async function safeFetchJson(url) {
@@ -48,8 +49,12 @@ async function getSpigotDownloads(pluginId) {
     if (!res.ok) return 0;
     const text = await res.text();
 
+    // Mit Cheerio den HTML-Inhalt parsen
+    const $ = cheerio.load(text);
+
     // Beispiel: "Downloads: 12,345"
-    const match = text.match(/Total Downloads:\s*([\d,]+)/i);
+    const downloadsText = $("div.resourceStats").text();
+    const match = downloadsText.match(/Total Downloads:\s*([\d,]+)/i);
     if (!match) return 0;
 
     return parseInt(match[1].replace(/,/g, ""), 10);
@@ -58,6 +63,7 @@ async function getSpigotDownloads(pluginId) {
     return 0;
   }
 }
+
 
 // ---- Badge JSON erzeugen ----
 (async () => {
