@@ -1,86 +1,42 @@
 const fs = require("fs");
-const path = require("path");
 
-// ---- Hilfsfunktion für sichere Fetches ----
-async function safeFetchJson(url) {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.error(`HTTP Error ${res.status} für URL: ${url}`);
-      return null;
-    }
-    const text = await res.text();
-    if (!text) {
-      console.error(`Leerer Body für URL: ${url}`);
-      return null;
-    }
-    return JSON.parse(text);
-  } catch (e) {
-    console.error(`Fehler beim Parsen von ${url}:`, e);
-    return null;
-  }
-}
+// ---- Plattformen abrufen ----
 
-// ---- Modrinth Downloads ----
 async function getModrinthDownloads(projectId) {
-  const res = await fetch(`https://api.modrinth.com/v2/project/${projectId}`);
-  if (!res.ok) return 0;
-  const data = await res.json();
-  return data.downloads ?? 0;
+  const r = await fetch(`https://api.modrinth.com/v2/project/${projectId}`);
+  const j = await r.json();
+  return j.downloads ?? 0;
 }
 
-// ---- GitHub Downloads ----
 async function getGithubDownloads(owner, repo) {
-  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases`);
-  if (!res.ok) return 0;
-  const releases = await res.json();
-  return releases.reduce(
-    (sum, rel) => sum + rel.assets.reduce((a, asset) => a + asset.download_count, 0),
-    0
-  );
+  const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases`);
+  const releases = await r.json();
+  return releases.reduce((sum, rel) => {
+    return sum + rel.assets.reduce((a, asset) => a + asset.download_count, 0);
+  }, 0);
 }
 
-// ---- SpigotMC Downloads (HTML Parsing) ----
-async function getSpigotDownloads(pluginId) {
-  try {
-    const url = `https://www.spigotmc.org/resources/${pluginId}/`;
-    const res = await fetch(url);
-    if (!res.ok) return 0;
-    const text = await res.text();
+// ---- Badge erstellen ----
 
-    // Beispiel: "Downloads: 12,345"
-    const match = text.match(/Total Downloads:\s*([\d,]+)/i);
-    if (!match) return 0;
-
-    return parseInt(match[1].replace(/,/g, ""), 10);
-  } catch (e) {
-    console.error("Fehler beim Abrufen von SpigotMC:", e);
-    return 0;
-  }
+function createBadge(total) {
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="20">
+  <rect width="70" height="20" fill="#555"/>
+  <rect x="70" width="80" height="20" fill="#007ec6"/>
+  <text x="35" y="14" fill="#fff" font-family="Verdana" font-size="11" text-anchor="middle">downloads</text>
+  <text x="110" y="14" fill="#fff" font-family="Verdana" font-size="11" text-anchor="middle">${total}</text>
+</svg>`;
 }
 
-// ---- Badge JSON erzeugen ----
+// ---- Gesamtdownloads berechnen ----
+
 (async () => {
-  const modrinth = await getModrinthDownloads("lWNvJAlY");
-  const github = await getGithubDownloads("deutschich", "BalSync");
-  const spigot = await getSpigotDownloads("130534"); // z. B. "12345"
+  const modrinth = await getModrinthDownloads("DEIN_MODRINTH_ID");
+  const github = await getGithubDownloads("DEINUSER", "DEINREPO");
 
-  const total = modrinth + github + spigot;
-  console.log(`Downloads: Modrinth=${modrinth}, GitHub=${github}, Spigot=${spigot}, Total=${total}`);
+  const total = modrinth + github;
 
-  const badgeJson = {
-    schemaVersion: 1,
-    label: "downloads",
-    message: total.toString(),
-    color: "blue",
-  };
+  const badge = createBadge(total);
 
-  // ---- Ordner prüfen und erstellen ----
-  const badgeDir = path.join(__dirname, "..", "badges");
-  if (!fs.existsSync(badgeDir)) {
-    fs.mkdirSync(badgeDir, { recursive: true });
-  }
-
-  // ---- JSON speichern ----
-  fs.writeFileSync(path.join(badgeDir, "downloads.json"), JSON.stringify(badgeJson, null, 2));
+  fs.writeFileSync("badges/downloads.svg", badge);
 })();
