@@ -31,6 +31,6 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add badges/downloads.svg
+          git add badges/downloads.json
           git commit -m "Update downloads badge" || echo "No changes"
           git push
