@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <!-- Google Consent Mode -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+    
+      // Default: alles abgelehnt
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied'
+      });
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BalSync - Synchronize Minecraft Player Balances Across Servers</title>
@@ -320,8 +330,147 @@
                 font-size: 2rem;
             }
         }
+        .cookie-banner {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.cookie-box {
+  background: #fff;
+  padding: 24px;
+  max-width: 420px;
+  width: 90%;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+  font-family: system-ui, sans-serif;
+}
+
+.cookie-box h2 {
+  margin-top: 0;
+}
+
+.cookie-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn.primary {
+  background: #2563eb;
+  color: white;
+}
+
+.btn.secondary {
+  background: #e5e7eb;
+}
+
+.btn.small {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.settings {
+  margin-top: 15px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.hidden {
+  display: none;
+}
     </style>
 </head>
+    <div id="cookie-banner" class="cookie-banner hidden">
+  <div class="cookie-box">
+    <h2>🍪 Cookie-Einstellungen</h2>
+    <p>
+      Wir verwenden Cookies, um Besucherstatistiken zu erfassen und unsere Website zu verbessern.
+      Du kannst selbst entscheiden, welche Cookies du zulassen möchtest.
+    </p>
+
+    <div class="cookie-actions">
+      <button id="accept-all" class="btn primary">
+        Alle akzeptieren
+      </button>
+      <button id="manage-settings" class="btn secondary">
+        Einstellungen verwalten
+      </button>
+    </div>
+
+    <div id="cookie-settings" class="settings hidden">
+      <label>
+        <input type="checkbox" id="analytics-consent">
+        Google Analytics (Statistik)
+      </label>
+
+      <button id="save-settings" class="btn primary small">
+        Auswahl speichern
+      </button>
+    </div>
+  </div>
+</div>
+    <script>
+const banner = document.getElementById('cookie-banner');
+const settings = document.getElementById('cookie-settings');
+const analyticsCheckbox = document.getElementById('analytics-consent');
+
+const consent = localStorage.getItem('cookie-consent');
+
+function loadGA() {
+  const script = document.createElement('script');
+  script.src = "https://www.googletagmanager.com/gtag/js?id=G-5H07SV662K";
+  script.async = true;
+  document.head.appendChild(script);
+
+  gtag('js', new Date());
+  gtag('config', 'G-5H07SV662K');
+}
+
+if (!consent) {
+  banner.classList.remove('hidden');
+} else if (consent === 'analytics') {
+  gtag('consent', 'update', { analytics_storage: 'granted' });
+  loadGA();
+}
+
+// Alle akzeptieren
+document.getElementById('accept-all').onclick = () => {
+  localStorage.setItem('cookie-consent', 'analytics');
+  gtag('consent', 'update', { analytics_storage: 'granted' });
+  loadGA();
+  banner.classList.add('hidden');
+};
+
+// Einstellungen anzeigen
+document.getElementById('manage-settings').onclick = () => {
+  settings.classList.toggle('hidden');
+};
+
+// Auswahl speichern
+document.getElementById('save-settings').onclick = () => {
+  if (analyticsCheckbox.checked) {
+    localStorage.setItem('cookie-consent', 'analytics');
+    gtag('consent', 'update', { analytics_storage: 'granted' });
+    loadGA();
+  } else {
+    localStorage.setItem('cookie-consent', 'none');
+  }
+  banner.classList.add('hidden');
+};
+</script>
 <body>
     <header>
         <nav>
