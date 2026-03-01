@@ -45,6 +45,9 @@ public class ConfigManager {
         config.addDefault("settings.starting-balance", 100.0);
         config.addDefault("settings.locale", "en");
 
+        config.addDefault("settings.log-balance-actions", true);
+        config.addDefault("settings.notify-player-on-sync", true);
+
         config.addDefault("tables.player_balances.table-name", "player_balances");
         config.addDefault("tables.player_balances.uuid-column", "player_uuid");
         config.addDefault("tables.player_balances.balance-column", "balance");
@@ -115,6 +118,14 @@ public class ConfigManager {
 
     public String getLocale() {
         return config.getString("settings.locale", "en");
+    }
+
+    public boolean isLogBalanceActions() {
+        return config.getBoolean("settings.log-balance-actions", true);
+    }
+
+    public boolean isNotifyPlayerOnSync() {
+        return config.getBoolean("settings.notify-player-on-sync", true);
     }
 
     // Table getters

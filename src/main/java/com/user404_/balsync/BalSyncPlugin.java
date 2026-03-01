@@ -1,6 +1,6 @@
 package com.user404_.balsync;
 
-import org.bukkit.plugin.ServicePriority;
+
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.economy.Economy;
@@ -64,6 +64,8 @@ public class BalSyncPlugin extends JavaPlugin {
         }
 
         logger.info("BalSync v" + getDescription().getVersion() + " enabled successfully!");
+        logger.info("The Official Version of BalSync is by User404_ (or deutschich on GitHub)");
+        logger.info("Other Copys may be not safe!");
     }
 
     @Override
