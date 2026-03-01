@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.user404_"
-version = "1.2-pre"
+version = "1.2"
 
 java {
     toolchain {

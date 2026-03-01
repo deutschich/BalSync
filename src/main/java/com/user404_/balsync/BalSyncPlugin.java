@@ -65,7 +65,7 @@ public class BalSyncPlugin extends JavaPlugin {
 
         logger.info("BalSync v" + getDescription().getVersion() + " enabled successfully!");
         logger.info("The Official Version of BalSync is by User404_ (or deutschich on GitHub)");
-        logger.info("Other Copys may be not safe!");
+        logger.info("Other Copys may not be safe!");
     }
 
     @Override
