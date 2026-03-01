@@ -5,8 +5,8 @@ on:
     branches:
       - master  # oder "main", je nach Repo
     paths-ignore:
-      - '**.md'     # ignoriert reine Dokumentationsänderungen
-      - '.github/**' # ignoriert Änderungen an Actions selbst
+      - '**.md'       # ignoriert reine Dokumentationsänderungen
+      - '.github/**'  # ignoriert Änderungen an Actions selbst
 
 jobs:
   build-and-release:
@@ -22,13 +22,13 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
 
       - name: Get version
         id: get_version
         run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          VERSION=$(./gradlew -q properties | grep "^version:" | awk '{print $2}')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
@@ -42,6 +42,6 @@ jobs:
             - Branch: ${{ github.ref_name }}
             - Version: v${{ steps.get_version.outputs.version }}
           files: |
-            target/*.jar
+            build/libs/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
