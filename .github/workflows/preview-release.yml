@@ -21,9 +21,9 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # Step 3: Build the plugin with Maven
+      # Step 3: Build the plugin with Gradle
       - name: Build Plugin
-        run: mvn clean package -DskipTests
+        run: ./gradlew clean build -x test
 
       # Step 4: Create a preview release
       - name: Create Preview Release
@@ -36,7 +36,7 @@ jobs:
             Commit: ${{ github.sha }}
             Branch: ${{ github.ref_name }}
           prerelease: true
-          files: target/*.jar
+          files: build/libs/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
