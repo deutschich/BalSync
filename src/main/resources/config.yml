@@ -23,6 +23,12 @@ settings:
   # Notification when balance is changed externally
   notify-on-external-change: true
 
+  # Log balance actions (reset, load, external changes) to console
+  log-balance-actions: true
+
+  # Notify player when balance is synchronized on join
+  notify-player-on-sync: true
+
 # Database Table Configuration
 tables:
   player_balances:

@@ -56,33 +56,27 @@ public class DatabaseManager {
     }
 
     public void setupTables() {
-        // Verwende DECIMAL statt DOUBLE für genauere Währungswerte
-        double startingBalance = plugin.getConfigManager().getStartingBalance();
-
+        // Kein DEFAULT-Wert mehr – wird beim Einfügen von der Anwendung gesetzt
         String createTableSQL = String.format(
                 "CREATE TABLE IF NOT EXISTS `%s` (" +
                         "`id` INT AUTO_INCREMENT PRIMARY KEY, " +
                         "`player_uuid` CHAR(36) UNIQUE NOT NULL, " +
                         "`player_name` VARCHAR(16), " +
-                        "`balance` DECIMAL(15, 2) NOT NULL DEFAULT %.2f, " +
+                        "`balance` DECIMAL(15, 2) NOT NULL, " +   // ← ohne DEFAULT
                         "`last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, " +
                         "INDEX `idx_uuid` (`player_uuid`)" +
                         ") CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE=InnoDB",
-                tableName, startingBalance
+                tableName
         );
 
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.execute(createTableSQL);
             plugin.getPluginLogger().info("Database tables checked/created successfully!");
-
-            // Optional: Protokolliere die erstellte Tabelle
             logTableInfo(conn);
         } catch (SQLException e) {
             plugin.getPluginLogger().log(Level.SEVERE, "Failed to create database tables!", e);
-
-            // Fallback-SQL ohne DEFAULT-Wert
-            tryFallbackTableCreation();
+            tryFallbackTableCreation();   // bleibt als Sicherheit
         }
     }
 

@@ -73,7 +73,9 @@ public class BalanceManager {
                         } else if (currentBalance < 0) {
                             economy.depositPlayer(player, Math.abs(currentBalance));
                         }
-                        plugin.getLogger().info("Reset balance to 0 for " + player.getName());
+                        if (plugin.getConfigManager().isLogBalanceActions()) {
+                            plugin.getLogger().info("Reset balance to 0 for " + player.getName());
+                        }
                         currentBalance = 0;
                     }
 
@@ -89,13 +91,17 @@ public class BalanceManager {
                     lastKnownBalances.put(player.getUniqueId(), databaseBalance);
                     lastKnownDbBalances.put(player.getUniqueId(), databaseBalance);
 
-                    plugin.getLogger().info("Balance loaded for " + player.getName() +
-                            ": " + databaseBalance + " (from DB)");
+                    if (plugin.getConfigManager().isLogBalanceActions()) {
+                        plugin.getLogger().info("Balance loaded for " + player.getName() +
+                                ": " + databaseBalance + " (from DB)");
+                    }
 
                     // Send message to player
-                    String message = plugin.getTranslationManager().getMessage("balance-loaded");
-                    if (message != null && !message.isEmpty()) {
-                        player.sendMessage(plugin.getTranslationManager().formatMessage(message));
+                    if (plugin.getConfigManager().isNotifyPlayerOnSync()) {
+                        String message = plugin.getTranslationManager().getMessage("balance-loaded");
+                        if (message != null && !message.isEmpty()) {
+                            player.sendMessage(plugin.getTranslationManager().formatMessage(message));
+                        }
                     }
                 });
 
@@ -185,8 +191,10 @@ public class BalanceManager {
 
                     lastKnownBalances.put(playerUUID, newBalance);
 
-                    plugin.getLogger().info("Applied external DB change for " +
-                            player.getName() + ": " + newBalance);
+                    if (plugin.getConfigManager().isLogBalanceActions()) {
+                        plugin.getLogger().info("Applied external DB change for " +
+                                player.getName() + ": " + newBalance);
+                    }
 
                     // Notify player if configured
                     if (plugin.getConfigManager().notifyOnExternalChange()) {
@@ -241,12 +249,14 @@ public class BalanceManager {
                         lastKnownBalances.put(uuid, currentBalance);
                         lastKnownDbBalances.put(uuid, newDbBalance);
 
-                        plugin.getLogger().info("Detected offline change for " +
-                                offlinePlayer.getName() + ": serverDelta=" + delta + ", newDB=" + newDbBalance);
+                        if (plugin.getConfigManager().isLogBalanceActions()) {
+                            plugin.getLogger().info("Detected offline change for " +
+                                    offlinePlayer.getName() + ": serverDelta=" + delta + ", newDB=" + newDbBalance);
+                        }
 
                         // Optional: send configured offline-change message to console/log
                         String msg = plugin.getTranslationManager().getMessage("offline-change-detected");
-                        if (msg != null && !msg.isEmpty()) {
+                        if (msg != null && !msg.isEmpty() && plugin.getConfigManager().isLogBalanceActions()) {
                             plugin.getLogger().info(plugin.getTranslationManager().formatMessage("prefix") + msg);
                         }
                     } catch (SQLException e) {
