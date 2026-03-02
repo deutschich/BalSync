@@ -29,6 +29,9 @@ settings:
   # Notify player when balance is synchronized on join
   notify-player-on-sync: true
 
+  # Log the "Saving all player balances..." and "Saved X player balances..." messages to console
+  log-save-all-messages: true
+
 # Database Table Configuration
 tables:
   player_balances:

@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 public class BalanceManager {
@@ -19,11 +20,13 @@ public class BalanceManager {
     private final Economy economy;
     private final DatabaseManager databaseManager;
     private BukkitTask dbPollingTask;
-    private final Map<UUID, Double> lastKnownBalances = new HashMap<>();
-    private final Map<UUID, Double> lastKnownDbBalances = new HashMap<>();
+    private final Map<UUID, Double> lastKnownBalances = new ConcurrentHashMap<>();
+    private final Map<UUID, Double> lastKnownDbBalances = new ConcurrentHashMap<>();
 
     public void saveAllBalances() {
-        plugin.getPluginLogger().info("Saving all player balances to database...");
+        if (plugin.getConfigManager().isLogSaveAllMessages()) {
+            plugin.getPluginLogger().info("Saving all player balances to database...");
+        }
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             int saved = 0;
@@ -41,7 +44,9 @@ public class BalanceManager {
                             "Failed to save balance for: " + player.getName(), e);
                 }
             }
-            plugin.getPluginLogger().info("Saved " + saved + " player balances to database.");
+            if (plugin.getConfigManager().isLogSaveAllMessages()) {
+                plugin.getPluginLogger().info("Saved " + saved + " player balances to database.");
+            }
         });
     }
 
