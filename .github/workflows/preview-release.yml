@@ -44,10 +44,10 @@ jobs:
       - name: Cleanup old Preview Releases
         run: |
           echo "Deleting old Preview Releases, keeping only the 10 newest..."
-          gh release list --limit 100 --repo $GITHUB_REPOSITORY \
-          | grep preview \
+          gh release list --repo $GITHUB_REPOSITORY --limit 100 --json tagName,publishedAt \
+          | jq -r '.[] | select(.tagName | startswith("preview")) | "\(.tagName) \(.publishedAt)"' \
           | sort -rk2 \
           | awk 'NR>10 {print $1}' \
-          | xargs -I {} gh release delete {} --repo $GITHUB_REPOSITORY --yes
+          | xargs -r -I {} gh release delete {} --repo $GITHUB_REPOSITORY --yes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
