@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 public class BalanceManager {
@@ -19,8 +20,8 @@ public class BalanceManager {
     private final Economy economy;
     private final DatabaseManager databaseManager;
     private BukkitTask dbPollingTask;
-    private final Map<UUID, Double> lastKnownBalances = new HashMap<>();
-    private final Map<UUID, Double> lastKnownDbBalances = new HashMap<>();
+    private final Map<UUID, Double> lastKnownBalances = new ConcurrentHashMap<>();
+    private final Map<UUID, Double> lastKnownDbBalances = new ConcurrentHashMap<>();
 
     public void saveAllBalances() {
         if (plugin.getConfigManager().isLogSaveAllMessages()) {

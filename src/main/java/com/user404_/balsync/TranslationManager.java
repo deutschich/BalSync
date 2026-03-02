@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 public class TranslationManager {
@@ -17,7 +17,7 @@ public class TranslationManager {
 
     public TranslationManager(BalSyncPlugin plugin) {
         this.plugin = plugin;
-        this.messages = new HashMap<>();
+        this.messages = new ConcurrentHashMap<>();
     }
 
     public void loadMessages() {

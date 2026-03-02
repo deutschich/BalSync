@@ -44,15 +44,8 @@ val shadeJar = tasks.register<Jar>("shadeJar") {
     from({
         configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
     })
-
-    manifest {
-        attributes(
-            "Main-Class" to "com.user404_.BalSync" // Passe an deine Hauptklasse an
-        )
-    }
 }
 
-// Build hängt vom fat-jar ab
 tasks.build {
     dependsOn(shadeJar)
 }
