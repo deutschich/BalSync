@@ -23,7 +23,9 @@ public class BalanceManager {
     private final Map<UUID, Double> lastKnownDbBalances = new HashMap<>();
 
     public void saveAllBalances() {
-        plugin.getPluginLogger().info("Saving all player balances to database...");
+        if (plugin.getConfigManager().isLogSaveAllMessages()) {
+            plugin.getPluginLogger().info("Saving all player balances to database...");
+        }
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             int saved = 0;
@@ -41,7 +43,9 @@ public class BalanceManager {
                             "Failed to save balance for: " + player.getName(), e);
                 }
             }
-            plugin.getPluginLogger().info("Saved " + saved + " player balances to database.");
+            if (plugin.getConfigManager().isLogSaveAllMessages()) {
+                plugin.getPluginLogger().info("Saved " + saved + " player balances to database.");
+            }
         });
     }
 
