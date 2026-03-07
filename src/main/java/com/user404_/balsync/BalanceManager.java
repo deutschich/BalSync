@@ -103,9 +103,11 @@ public class BalanceManager {
 
                     // Send message to player
                     if (plugin.getConfigManager().isNotifyPlayerOnSync()) {
-                        String message = plugin.getTranslationManager().getMessage("balance-loaded");
-                        if (message != null && !message.isEmpty()) {
-                            player.sendMessage(plugin.getTranslationManager().formatMessage(message));
+                        String message = plugin.getTranslationManager().formatMessage("balance-loaded");
+                        if ("actionbar".equalsIgnoreCase(plugin.getConfigManager().getMessageDisplay())) {
+                            player.sendActionBar(message);
+                        } else {
+                            player.sendMessage(message);
                         }
                     }
                 });
@@ -203,14 +205,18 @@ public class BalanceManager {
 
                     // Notify player if configured
                     if (plugin.getConfigManager().notifyOnExternalChange()) {
-                        String message = plugin.getTranslationManager().getMessage(
-                                "balance-external-change");
+                        String message = plugin.getTranslationManager().getMessage("balance-external-change");
                         if (message != null && !message.isEmpty()) {
                             String formatted = message
                                     .replace("{old}", String.format("%.2f", oldBalance != null ? oldBalance : currentBalance))
                                     .replace("{new}", String.format("%.2f", newBalance))
                                     .replace("&", "§");
-                            player.sendMessage(plugin.getTranslationManager().formatMessage("prefix") + formatted);
+                            String finalMessage = plugin.getTranslationManager().formatMessage("prefix") + formatted;
+                            if ("actionbar".equalsIgnoreCase(plugin.getConfigManager().getMessageDisplay())) {
+                                player.sendActionBar(finalMessage);
+                            } else {
+                                player.sendMessage(finalMessage);
+                            }
                         }
                     }
                 }

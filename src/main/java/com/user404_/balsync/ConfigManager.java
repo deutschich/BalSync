@@ -48,6 +48,7 @@ public class ConfigManager {
         config.addDefault("settings.log-balance-actions", true);
         config.addDefault("settings.notify-player-on-sync", true);
         config.addDefault("settings.log-save-all-messages", true);
+        config.addDefault("settings.message-display", "chat");
 
         config.addDefault("tables.player_balances.table-name", "player_balances");
         config.addDefault("tables.player_balances.uuid-column", "player_uuid");
@@ -131,6 +132,8 @@ public class ConfigManager {
     public boolean isLogSaveAllMessages() {
         return config.getBoolean("settings.log-save-all-messages", true);
     }
+
+    public String getMessageDisplay() { return config.getString("settings.message-display", "chat"); }
 
     // Table getters
     public String getTableName() {
