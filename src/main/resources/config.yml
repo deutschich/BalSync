@@ -32,6 +32,9 @@ settings:
   # Log the "Saving all player balances..." and "Saved X player balances..." messages to console
   log-save-all-messages: true
 
+  # Message display method: "chat" (default) or "actionbar"
+  message-display: "chat"
+
 # Database Table Configuration
 tables:
   player_balances:

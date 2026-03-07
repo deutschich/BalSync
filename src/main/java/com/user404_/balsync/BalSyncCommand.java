@@ -17,12 +17,12 @@ public class BalSyncCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("balsync.admin")) {
-            sender.sendMessage(plugin.getTranslationManager().formatMessage("no-permission"));
+            sendMessage(sender, "no-permission");
             return true;
         }
 
         if (args.length == 0) {
-            sender.sendMessage(plugin.getTranslationManager().formatMessage("usage"));
+            sendMessage(sender, "usage");
             return true;
         }
 
@@ -30,20 +30,19 @@ public class BalSyncCommand implements CommandExecutor {
             case "reload":
                 plugin.getConfigManager().reload();
                 plugin.getTranslationManager().loadMessages();
-                sender.sendMessage(plugin.getTranslationManager().formatMessage("config-reloaded"));
+                sendMessage(sender, "config-reloaded");
                 break;
 
             case "save":
-                // Save all balances - Methode ist jetzt in BalanceManager
                 balanceManager.saveAllBalances();
-                sender.sendMessage(plugin.getTranslationManager().formatMessage("balance-saved"));
+                sendMessage(sender, "balance-saved");
                 break;
 
             case "load":
                 if (sender instanceof Player) {
                     balanceManager.loadPlayerBalance((Player) sender);
                 } else {
-                    sender.sendMessage(plugin.getTranslationManager().formatMessage("player-not-found"));
+                    sendMessage(sender, "player-not-found");
                 }
                 break;
 
@@ -52,11 +51,25 @@ public class BalSyncCommand implements CommandExecutor {
                 break;
 
             default:
-                sender.sendMessage(plugin.getTranslationManager().formatMessage("usage"));
+                sendMessage(sender, "usage");
                 break;
         }
 
         return true;
+    }
+
+    private void sendMessage(CommandSender sender, String messageKey) {
+        String message = plugin.getTranslationManager().formatMessage(messageKey);
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            if ("actionbar".equalsIgnoreCase(plugin.getConfigManager().getMessageDisplay())) {
+                player.sendActionBar(message);
+            } else {
+                player.sendMessage(message);
+            }
+        } else {
+            sender.sendMessage(message);
+        }
     }
 
     private void sendStatusInfo(CommandSender sender) {
