@@ -1,4 +1,5 @@
 # BalSync 1.3.1
+
 ## Permission System and Hotfix Update
 
 ## Updated config.yml
