@@ -73,7 +73,7 @@ public class BalSyncPlugin extends JavaPlugin {
         // Save all balances on shutdown
         if (balanceManager != null) {
             balanceManager.saveAllBalances();
-            balanceManager.shutdown(); // NEW: Cleanup polling tasks
+            balanceManager.shutdown(); // Cleanup polling tasks
         }
 
         // Close database connection

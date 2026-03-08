@@ -20,10 +20,14 @@ public class PlayerEventListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        // 2 Sekunden (40 Ticks) Verzögerung
+        Player player = event.getPlayer();
+        if (!player.hasPermission("balsync.sync")) {
+            return; // Spieler ohne Permission wird nicht synchronisiert
+        }
+
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            if (event.getPlayer().isOnline()) {
-                balanceManager.loadPlayerBalance(event.getPlayer());
+            if (player.isOnline()) {
+                balanceManager.loadPlayerBalance(player);
             }
         }, 40L);
     }

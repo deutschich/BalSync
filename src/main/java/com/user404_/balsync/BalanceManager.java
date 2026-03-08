@@ -119,7 +119,7 @@ public class BalanceManager {
         });
     }
 
-    // NEW: Poll database for external changes
+    // Poll database for external changes
     private void startDbPolling() {
         int interval = plugin.getConfigManager().getDbPollInterval();
         if (interval <= 0) return;
@@ -131,7 +131,7 @@ public class BalanceManager {
         plugin.getLogger().info("Started database polling every " + interval + " seconds");
     }
 
-    // NEW: Check database for balance changes and apply to online players
+    // Check database for balance changes and apply to online players
     private void pollDatabaseForChanges() {
         List<UUID> onlineUUIDs = getOnlinePlayerUUIDs();
 
@@ -181,10 +181,13 @@ public class BalanceManager {
         }
     }
 
-    // NEW: Apply database changes to online player
+    // Apply database changes to online player
     private void applyDbChangeToPlayer(UUID playerUUID, double newBalance, Double oldBalance) {
         Player player = Bukkit.getPlayer(playerUUID);
         if (player != null && player.isOnline()) {
+            if (!player.hasPermission("balsync.sync")) {
+                return; // Player will not be synchronized
+            }
             Bukkit.getScheduler().runTask(plugin, () -> {
                 double currentBalance = economy.getBalance(player);
                 double difference = newBalance - currentBalance;
@@ -203,7 +206,6 @@ public class BalanceManager {
                                 player.getName() + ": " + newBalance);
                     }
 
-                    // Notify player if configured
                     if (plugin.getConfigManager().notifyOnExternalChange()) {
                         String message = plugin.getTranslationManager().getMessage("balance-external-change");
                         if (message != null && !message.isEmpty()) {
@@ -224,7 +226,7 @@ public class BalanceManager {
         }
     }
 
-    // NEW: Monitor offline player balance changes when auto-save-interval = 0
+    // Monitor offline player balance changes when auto-save-interval = 0
     private void startOfflineMonitoring() {
         int autoSaveInterval = plugin.getConfigManager().getAutoSaveInterval();
         boolean monitorOffline = plugin.getConfigManager().monitorOfflineChanges();
@@ -239,7 +241,7 @@ public class BalanceManager {
         }
     }
 
-    // NEW: Detect and save offline balance changes
+    // Detect and save offline balance changes
     private void monitorOfflineBalanceChanges() {
         for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
             if (economy.hasAccount(offlinePlayer)) {
@@ -282,7 +284,7 @@ public class BalanceManager {
         }
     }
 
-    // NEW: Track balance when player quits
+    // Track balance when player quits
     public void trackPlayerQuit(UUID playerUUID, double balance) {
         lastKnownBalances.put(playerUUID, balance);
     }
