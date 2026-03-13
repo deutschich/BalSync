@@ -1,36 +1,26 @@
-# BalSync 1.3.1
+# BalSync 1.4
 
-## Permission System and Hotfix Update
+## New Feature: Update Checker
+>**Update Checker**: BalSync now automatically checks for new versions on Modrinth. When an update is available and compatible with your server, players with the `balsync.update.notify` permission (OP by default) will receive a clickable notification upon joining. You can disable this feature in `config.yml` (`settings.check-for-updates: false`).
 
-## Updated config.yml
-I have used AI for one of the first Updates and the AI deleted the Database Settings from the config.yml. I recovered it because I discovered this issue myself.
-
-The new Part:
-```yaml
-# Database Configuration
-database:
-  host: "localhost"
-  port: 3306
-  database: "minecraft"
-  username: "root"
-  password: "password"
-  use-ssl: false
-  connection-pool:
-    maximum-pool-size: 10
-    minimum-idle: 5
-    connection-timeout: 30000
-    idle-timeout: 600000
-```
-
-### New Feature: Per-Player Sync Control
-
-We've added a new permission node `balsync.sync` (default: `true`) that lets you control which players are automatically synchronized with the database.
-
-- **Players with `balsync.sync: true`** (default) will have their balance loaded on join and receive external balance updates as usual.
-- **Players with `balsync.sync: false`** will **not** be synchronized – their balance will not be loaded when they join, and external database changes will be ignored for them.
-
-This allows server admins to exclude specific players (e.g., bots, restricted accounts) from the synchronization process without affecting the core functionality.
-
-All admin commands (`/balsync reload`, `save`, `load`, `status`) remain protected by the `balsync.admin` permission (default: `op`). Regular players still cannot execute these commands.
-
-No configuration changes are required – simply assign the permission via your permissions plugin (e.g., LuckPerms) to opt players out.
+## New Feature: Rollback from Backups
+>
+>BalSync now allows you to restore player balances from previously created backup files!
+>
+>- **List available backups:**  
+>  `/balsync backups` – shows all backup files with timestamps.
+>
+>- **Rollback all players or a single player:**  
+>  `/balsync rollback <filename> [player]`
+>    - If you specify a player name, only that player's balance is restored.
+>    - If you omit the player, all players in the backup are restored.
+>
+>The rollback runs asynchronously and updates both the database and online players' balances instantly. The plugin’s internal tracking is kept consistent to avoid any conflicts with auto-save or polling.
+>
+>**Example:**  
+`/balsync rollback backup-2025-03-13-12-30-00.json` – restores all balances from that backup.  
+`/balsync rollback backup-2025-03-13-12-30-00.json Steve` – restores only Steve's balance.
+>
+>Make sure to enable backups in your `config.yml` (`backup.enabled: true`) and set the interval to your preference. Backups are stored in the `backups/` folder inside the plugin directory.
+>
+>*Note:* Rollback requires the `balsync.admin` permission (default OP).

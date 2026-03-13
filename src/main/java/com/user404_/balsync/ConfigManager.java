@@ -50,10 +50,16 @@ public class ConfigManager {
         config.addDefault("settings.log-save-all-messages", true);
         config.addDefault("settings.message-display", "chat");
 
+        config.addDefault("settings.backup.enabled", false);
+        config.addDefault("settings.backup.interval-minutes", 60);
+        config.addDefault("settings.backup.max-files", 50);
+
         config.addDefault("tables.player_balances.table-name", "player_balances");
         config.addDefault("tables.player_balances.uuid-column", "player_uuid");
         config.addDefault("tables.player_balances.balance-column", "balance");
         config.addDefault("tables.player_balances.last-updated-column", "last_updated");
+
+        config.addDefault("settings.check-for-updates", true);
 
         config.options().copyDefaults(true);
         plugin.saveConfig();
@@ -134,6 +140,22 @@ public class ConfigManager {
     }
 
     public String getMessageDisplay() { return config.getString("settings.message-display", "chat"); }
+
+    public boolean isBackupEnabled() {
+        return config.getBoolean("settings.backup.enabled", false);
+    }
+
+    public int getBackupIntervalMinutes() {
+        return config.getInt("settings.backup.interval-minutes", 60);
+    }
+
+    public int getBackupMaxFiles() {
+        return config.getInt("settings.backup.max-files", 50);
+    }
+
+    public boolean checkForUpdates() {
+        return config.getBoolean("settings.check-for-updates", true);
+    }
 
     // Table getters
     public String getTableName() {

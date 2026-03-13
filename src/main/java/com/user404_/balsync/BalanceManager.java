@@ -338,4 +338,14 @@ public class BalanceManager {
         lastKnownBalances.clear();
         lastKnownDbBalances.clear();
     }
+    public void updateBalanceCache(UUID playerUUID, double newBalance) {
+        lastKnownBalances.put(playerUUID, newBalance);
+        lastKnownDbBalances.put(playerUUID, newBalance);
+    }
+    public void updateLastKnown(UUID uuid, double balance) {
+        lastKnownBalances.put(uuid, balance);
+    }
+    public void updateLastKnownDb(UUID uuid, double balance) {
+        lastKnownDbBalances.put(uuid, balance);
+    }
 }

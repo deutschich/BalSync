@@ -47,6 +47,18 @@ settings:
   # Message display method: "chat" (default) or "actionbar"
   message-display: "chat"
 
+  # Check for updates on Modrinth
+  check-for-updates: true
+
+# Backup Settings
+backup:
+  # Enable automatic balance backups
+  enabled: false
+  # Backup interval in minutes (e.g., 60 for hourly, 30 for half-hourly)
+  interval-minutes: 60
+  # Maximum number of backup files to keep (oldest are deleted)
+  max-files: 50
+
 # Database Table Configuration
 tables:
   player_balances:

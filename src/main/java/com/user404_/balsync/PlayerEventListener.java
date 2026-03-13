@@ -22,12 +22,20 @@ public class PlayerEventListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPermission("balsync.sync")) {
-            return; // Spieler ohne Permission wird nicht synchronisiert
+            return;
         }
 
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (player.isOnline()) {
                 balanceManager.loadPlayerBalance(player);
+
+                // Update notification
+                if (plugin.getConfigManager().checkForUpdates() && player.hasPermission("balsync.update.notify")) {
+                    UpdateChecker uc = plugin.getUpdateChecker();
+                    if (uc != null && uc.isUpdateAvailable() && uc.isCompatible()) {
+                        uc.sendUpdateMessage(player);
+                    }
+                }
             }
         }, 40L);
     }
