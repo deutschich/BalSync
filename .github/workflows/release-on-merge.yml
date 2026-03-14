@@ -23,7 +23,7 @@ jobs:
           java-version: '21'
 
       - name: Build with Gradle
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build -x test -Prelease=true
 
       - name: Get version
         id: get_version
