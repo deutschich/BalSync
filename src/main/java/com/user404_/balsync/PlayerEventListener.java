@@ -30,7 +30,10 @@ public class PlayerEventListener implements Listener {
                 balanceManager.loadPlayerBalance(player);
 
                 // Update notification
-                if (plugin.getConfigManager().checkForUpdates() && player.hasPermission("balsync.update.notify")) {
+                // Inside onPlayerJoin, after the delay:
+                if (plugin.getConfigManager().checkForUpdates() &&
+                        player.hasPermission("balsync.update.notify") &&
+                        BuildConfig.UPDATE_CHECKER_ENABLED) {   // <-- add this
                     UpdateChecker uc = plugin.getUpdateChecker();
                     if (uc != null && uc.isUpdateAvailable() && uc.isCompatible()) {
                         uc.sendUpdateMessage(player);

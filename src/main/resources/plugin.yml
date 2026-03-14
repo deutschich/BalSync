@@ -1,5 +1,5 @@
 name: BalSync
-version: 1.4-pre
+version: ${version}
 main: com.user404_.balsync.BalSyncPlugin
 api-version: '1.21'
 description: Synchronizes player balances with MySQL database
@@ -11,7 +11,7 @@ depend: [Vault]
 commands:
   balsync:
     description: Main command for BalSync
-    usage: /<command> [reload|save|load|status]
+    usage: /<command> [reload|save|load|status|backup|backups|rollback]
     permission: balsync.admin
 
 permissions:

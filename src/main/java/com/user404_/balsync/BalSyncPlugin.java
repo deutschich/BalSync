@@ -1,6 +1,5 @@
 package com.user404_.balsync;
 
-
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.economy.Economy;
@@ -24,6 +23,15 @@ public class BalSyncPlugin extends JavaPlugin {
     public void onEnable() {
         instance = this;
         logger = getLogger();
+
+        // PREVIEW BUILD CHANGES: Show warning if this is a preview build
+        if ("preview".equals(BuildConfig.BUILD_TYPE)) {
+            logger.warning("=========================================");
+            logger.warning("This is a PREVIEW build (commit: " + BuildConfig.COMMIT_ID + ").");
+            logger.warning("It may contain bugs and should not be used in production.");
+            logger.warning("Update checking is disabled.");
+            logger.warning("=========================================");
+        }
 
         // Load configuration
         configManager = new ConfigManager(this);
@@ -59,6 +67,7 @@ public class BalSyncPlugin extends JavaPlugin {
 
         // Register commands
         getCommand("balsync").setExecutor(new BalSyncCommand(this, balanceManager));
+        getCommand("balsync").setTabCompleter(new BalSyncTabCompleter(this));
 
         // Start auto-save task if enabled
         int interval = configManager.getAutoSaveInterval();
@@ -74,18 +83,18 @@ public class BalSyncPlugin extends JavaPlugin {
         if (configManager.isBackupEnabled()) {
             int intervalMinutes = configManager.getBackupIntervalMinutes();
             if (intervalMinutes > 0) {
-                long ticks = intervalMinutes * 60L * 20L; // minutes to ticks
+                long ticks = intervalMinutes * 60L * 20L;
                 getServer().getScheduler().runTaskTimerAsynchronously(this,
                         () -> backupManager.createBackup(),
-                        ticks, ticks); // start after first interval
+                        ticks, ticks);
                 logger.info("Backups scheduled every " + intervalMinutes + " minute(s).");
             } else {
                 logger.warning("Backup enabled but interval is 0 or negative; backups disabled.");
             }
         }
 
-        // Update checker
-        if (configManager.checkForUpdates()) {
+        // PREVIEW BUILD CHANGES: Only start update checker for release builds
+        if (configManager.checkForUpdates() && BuildConfig.UPDATE_CHECKER_ENABLED) {
             updateChecker = new UpdateChecker(this);
             updateChecker.checkForUpdates(); // immediate check
 
@@ -94,13 +103,9 @@ public class BalSyncPlugin extends JavaPlugin {
                     () -> updateChecker.checkForUpdates(), updateCheckInterval, updateCheckInterval);
         }
 
-        // Register command executor and tab completer
-        getCommand("balsync").setExecutor(new BalSyncCommand(this, balanceManager));
-        getCommand("balsync").setTabCompleter(new BalSyncTabCompleter(this));
-
         logger.info("BalSync v" + getDescription().getVersion() + " enabled successfully!");
         logger.info("The Official Version of BalSync is by User404_ (or deutschich on GitHub)");
-        logger.info("Other Copys may not be safe!");
+        logger.info("Other Copies may not be safe!");
     }
 
     @Override
@@ -108,7 +113,7 @@ public class BalSyncPlugin extends JavaPlugin {
         // Save all balances on shutdown
         if (balanceManager != null) {
             balanceManager.saveAllBalances();
-            balanceManager.shutdown(); // Cleanup polling tasks
+            balanceManager.shutdown();
         }
 
         // Close database connection
