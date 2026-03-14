@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Consent Mode -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', {
+      'analytics_storage': 'denied'
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BalSync – Synchronize Minecraft Balances Across Servers</title>
+  <meta name="description" content="BalSync is a modern, open‑source Minecraft plugin that keeps player balances in sync across your entire server network using MySQL. Features automatic backups, rollback commands, offline change detection, database polling, multi‑language messages, and Vault integration.">
+  <meta name="keywords" content="Minecraft, Plugin, BalSync, Economy, Balance Sync, Vault, MySQL, Multi‑Server, Backup, Rollback, Offline Detection, Open Source, Spigot, Paper">
+  <meta name="author" content="BalSync Team">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-dark: #0f172a;
+      --secondary-dark: #1e293b;
+      --accent-green: #10b981;
+      --accent-green-hover: #34d399;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --border-color: #334155;
+      --card-bg: rgba(30, 41, 59, 0.7);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--primary-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    /* Header & Navigation */
+    header {
+      background-color: var(--secondary-dark);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 20px;
+    }
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--accent-green), #059669);
+      border-radius: 4px;
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+      padding: 0.5rem 0;
+    }
+    .nav-links a:hover {
+      color: var(--accent-green);
+    }
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    /* Hero Section */
+    .hero {
+      padding: 5rem 0;
+      text-align: center;
+      background: linear-gradient(180deg, var(--primary-dark) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, #f1f5f9, var(--accent-green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+    .tag {
+      display: inline-block;
+      background-color: var(--accent-green);
+      color: var(--primary-dark);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--accent-green);
+      color: var(--primary-dark);
+      padding: 0.9rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+    .cta-button:hover {
+      background-color: transparent;
+      color: var(--accent-green);
+      border-color: var(--accent-green);
+    }
+    /* Sections */
+    section {
+      padding: 4rem 0;
+    }
+    section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      text-align: center;
+      position: relative;
+    }
+    section h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background-color: var(--accent-green);
+      border-radius: 2px;
+    }
+    /* Features */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    .feature-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent-green);
+    }
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent-green);
+    }
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    /* Config & Commands */
+    .config-demo, .commands-demo {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+    .config-key {
+      color: var(--accent-green);
+    }
+    .config-value {
+      color: #60a5fa;
+    }
+    .config-comment {
+      color: #94a3b8;
+    }
+    .command {
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+    .command-desc {
+      color: var(--text-secondary);
+      padding-left: 1.5rem;
+      margin-bottom: 1.2rem;
+      border-left: 2px solid var(--border-color);
+    }
+    .permission-note {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      font-style: italic;
+    }
+    /* Download Section */
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .download-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .download-card:hover {
+      border-color: var(--accent-green);
+      transform: translateY(-3px);
+    }
+    .platform-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .platform-name {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .download-link {
+      display: inline-block;
+      background-color: transparent;
+      color: var(--accent-green);
+      padding: 0.7rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid var(--accent-green);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .download-link:hover {
+      background-color: var(--accent-green);
+      color: var(--primary-dark);
+    }
+    /* Footer */
+    footer {
+      background-color: var(--secondary-dark);
+      border-top: 1px solid var(--border-color);
+      padding: 3rem 0;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover {
+      color: var(--accent-green);
+    }
+    .copyright {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+      .mobile-toggle {
+        display: block;
+      }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--secondary-dark);
+        padding: 1rem 0;
+        border-top: 1px solid var(--border-color);
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      section h2 {
+        font-size: 2rem;
+      }
+    }
+    /* Cookie Banner */
+    .cookie-banner {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .cookie-box {
+      background: #fff;
+      padding: 24px;
+      max-width: 420px;
+      width: 90%;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.2);
+      font-family: system-ui, sans-serif;
+      color: #111827;
+    }
+    .cookie-box h2 {
+      margin-top: 0;
+    }
+    .cookie-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn.primary {
+      background: #2563eb;
+      color: white;
+    }
+    .btn.secondary {
+      background: #e5e7eb;
+    }
+    .btn.small {
+      margin-top: 10px;
+      width: 100%;
+    }
+    .settings {
+      margin-top: 15px;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Cookie Banner -->
+  <div id="cookie-banner" class="cookie-banner hidden">
+    <div class="cookie-box">
+      <h2>🍪 Cookie Settings</h2>
+      <p>
+        We use cookies to collect visitor statistics and improve our website.
+        You can decide for yourself which cookies you want to allow.
+      </p>
+      <div class="cookie-actions">
+        <button id="accept-all" class="btn primary">Accept all</button>
+        <button id="manage-settings" class="btn secondary">Manage preferences</button>
+      </div>
+      <div id="cookie-settings" class="settings hidden">
+        <label>
+          <input type="checkbox" id="analytics-consent"> Google Analytics (statistics)
+        </label>
+        <button id="save-settings" class="btn primary small">Save selection</button>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <nav>
+      <div class="container">
+        <a href="#" class="logo">
+          <span class="logo-icon"></span>
+          BalSync
+        </a>
+        <button class="mobile-toggle" id="mobileToggle">☰</button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#commands">Commands</a></li>
+          <li><a href="#configuration">Configuration</a></li>
+          <li><a href="#download">Download</a></li>
+          <li><a href="https://github.com/deutschich/balsync" target="_blank">GitHub</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <span class="tag">OPEN SOURCE · v1.4+</span>
+        <h1>Seamless Economy Sync for Minecraft Networks</h1>
+        <p>BalSync keeps player balances consistent across all your servers using a central MySQL database. With automatic backups, rollback commands, offline change detection, and real‑time external updates, your economy has never been more reliable.</p>
+        <a href="#download" class="cta-button">
+          <span>Download Now </span>
+          <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/deutschich/BalSync/main/badges/downloads.json" alt="downloads" style="vertical-align: middle;">
+        </a>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="container">
+        <h2>Powerful Features</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🔄</div>
+            <h3>Cross‑Server Sync</h3>
+            <p>Players keep the same balance on every server of your network. Log in anywhere, your money follows.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">💾</div>
+            <h3>MySQL Backend</h3>
+            <p>Uses a robust MySQL/MariaDB database with connection pooling (HikariCP) for high performance and reliability.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚙️</div>
+            <h3>Vault Integration</h3>
+            <p>Works with any economy plugin that supports Vault – EssentialsX, CMI, CraftConomy, and more.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📦</div>
+            <h3>Auto‑Backup & Rollback</h3>
+            <p>Create automatic JSON backups of all balances. Restore individual players or the whole economy with simple rollback commands.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <h3>Offline Change Detection</h3>
+            <p>Monitors offline players and saves their balance changes, even when auto‑save is disabled. Never lose a single coin.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3>Multi‑Language & ActionBar</h3>
+            <p>Fully translatable (English, German, Spanish, French, Polish, Portuguese, Russian, and more). Messages can appear in chat or action bar.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>External Change Polling</h3>
+            <p>Periodically checks the database for changes made by other servers and updates online players in real time.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔔</div>
+            <h3>Update Notifications</h3>
+            <p>Built‑in update checker notifies admins about new releases on Modrinth with a clickable download link.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔧</div>
+            <h3>Highly Configurable</h3>
+            <p>Control every aspect: reset on join, log actions, polling intervals, message display, and more.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="commands">
+      <div class="container">
+        <h2>Commands & Permissions</h2>
+        <div class="commands-demo">
+          <p><span class="command">/balsync reload</span></p>
+          <p class="command-desc">Reloads configuration and language files without restarting the server.</p>
+          <p><span class="command">/balsync save</span></p>
+          <p class="command-desc">Immediately saves all online player balances to the database.</p>
+          <p><span class="command">/balsync load</span></p>
+          <p class="command-desc">(Player only) Forces a reload of your balance from the database.</p>
+          <p><span class="command">/balsync status</span></p>
+          <p class="command-desc">Shows current settings: auto‑save interval, polling, reset‑on‑join, etc.</p>
+          <p><span class="command">/balsync backup</span></p>
+          <p class="command-desc">Creates a manual JSON backup of all player balances (asynchronous).</p>
+          <p><span class="command">/balsync backups</span></p>
+          <p class="command-desc">Lists all available backup files with timestamps.</p>
+          <p><span class="command">/balsync rollback &lt;filename&gt; [player]</span></p>
+          <p class="command-desc">Restores balances from a backup. If a player name is given, only that player is restored.</p>
+          <p class="permission-note">* All commands require <span class="command">balsync.admin</span> (default OP).<br>
+          * <span class="command">balsync.sync</span> (default true) allows players to be synchronised on join.<br>
+          * <span class="command">balsync.update.notify</span> (default OP) enables update notifications.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="configuration">
+      <div class="container">
+        <h2>Flexible Configuration</h2>
+        <p style="text-align: center; margin-bottom: 2rem; color: var(--text-secondary);">BalSync's <code>config.yml</code> gives you full control. Below are the most important settings (default values shown).</p>
+        <div class="config-demo">
+          <p><span class="config-comment"># Database Connection</span></p>
+          <p><span class="config-key">database:</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">host:</span> <span class="config-value">"localhost"</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">port:</span> <span class="config-value">3306</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">database:</span> <span class="config-value">"minecraft"</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">username:</span> <span class="config-value">"root"</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">password:</span> <span class="config-value">"password"</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">use-ssl:</span> <span class="config-value">false</span></p>
+          <br>
+          <p><span class="config-comment"># Core Settings</span></p>
+          <p><span class="config-key">settings:</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">auto-save-interval:</span> <span class="config-value">60</span> <span class="config-comment"># seconds (0 = disable)</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">save-on-quit:</span> <span class="config-value">true</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">starting-balance:</span> <span class="config-value">100.0</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">locale:</span> <span class="config-value">"en"</span> <span class="config-comment"># de, es, fr, pl, pt-br, ru, at (Austrian)</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">reset-on-join:</span> <span class="config-value">false</span> <span class="config-comment"># reset to 0 before loading from DB</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">monitor-offline-changes:</span> <span class="config-value">true</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">db-poll-interval:</span> <span class="config-value">10</span> <span class="config-comment"># seconds, 0 = off</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">notify-on-external-change:</span> <span class="config-value">true</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">log-balance-actions:</span> <span class="config-value">true</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">notify-player-on-sync:</span> <span class="config-value">true</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">log-save-all-messages:</span> <span class="config-value">true</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">message-display:</span> <span class="config-value">"chat"</span> <span class="config-comment"># or "actionbar"</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">check-for-updates:</span> <span class="config-value">true</span></p>
+          <br>
+          <p><span class="config-key">backup:</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">enabled:</span> <span class="config-value">false</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">interval-minutes:</span> <span class="config-value">60</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">max-files:</span> <span class="config-value">50</span> <span class="config-comment"># number of backups to keep</span></p>
+          <br>
+          <p><span class="config-key">tables:</span> <span class="config-comment"># customize column names if needed</span></p>
+          <p>&nbsp;&nbsp;<span class="config-key">player_balances:</span></p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="config-key">table-name:</span> <span class="config-value">"player_balances"</span></p>
+        </div>
+        <p style="text-align: center; margin-top: 2rem; color: var(--text-secondary);">For a full list of options, see the <a href="https://github.com/deutschich/BalSync/wiki" style="color: var(--accent-green);">online wiki</a>.</p>
+      </div>
+    </section>
+
+    <section id="download">
+      <div class="container">
+        <h2>Download BalSync</h2>
+        <p style="text-align: center; margin-bottom: 3rem; color: var(--text-secondary); max-width: 800px; margin-left: auto; margin-right: auto;">
+          BalSync is available on all major platforms. Requires <strong>Vault</strong> and a <strong>MySQL/MariaDB</strong> database. Compatible with Spigot, Paper, Purpur, and any other server software supporting Bukkit API 1.21+.
+        </p>
+        <div class="download-grid">
+          <div class="download-card">
+            <div class="platform-icon">🔧</div>
+            <h3 class="platform-name">SpigotMC</h3>
+            <p>The original resource page.</p>
+            <a href="https://www.spigotmc.org/resources/balsync.130534/" class="download-link" target="_blank">Download</a>
+          </div>
+          <div class="download-card">
+            <div class="platform-icon">📦</div>
+            <h3 class="platform-name">Modrinth</h3>
+            <p>Modern, open‑source platform.</p>
+            <a href="https://modrinth.com/plugin/balsync" class="download-link" target="_blank">Download</a>
+          </div>
+          <div class="download-card">
+            <div class="platform-icon">📁</div>
+            <h3 class="platform-name">GitHub</h3>
+            <p>Source code, issues, and releases.</p>
+            <a href="https://github.com/deutschich/balsync/releases" class="download-link" target="_blank">Releases</a>
+          </div>
+          <div class="download-card">
+            <div class="platform-icon">📄</div>
+            <h3 class="platform-name">PaperMC Hangar</h3>
+            <p>Coming soon – stay tuned!</p>
+            <a class="download-link" style="opacity: 0.6; cursor: default;">Soon</a>
+          </div>
+        </div>
+        <p style="text-align: center; margin-top: 2rem; color: var(--text-secondary);">
+          <img src="https://img.shields.io/github/v/release/deutschich/balsync?label=latest&color=10b981" alt="GitHub release"> &nbsp;
+          <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/deutschich/BalSync/main/badges/downloads.json&color=10b981" alt="Total downloads">
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <a href="#" class="logo" style="justify-content: center; margin-bottom: 1.5rem;">
+        <span class="logo-icon"></span>
+        BalSync
+      </a>
+      <ul class="footer-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#commands">Commands</a></li>
+        <li><a href="#configuration">Config</a></li>
+        <li><a href="#download">Download</a></li>
+        <li><a href="https://github.com/deutschich/balsync" target="_blank">GitHub</a></li>
+        <li><a href="https://github.com/deutschich/BalSync/wiki" target="_blank">Wiki</a></li>
+      </ul>
+      <p class="copyright">
+        BalSync is an open‑source project. Not an official Minecraft product. Minecraft is a trademark of Mojang AB.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile navigation toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileToggle = document.getElementById('mobileToggle');
+      const navLinks = document.getElementById('navLinks');
+
+      mobileToggle.addEventListener('click', function() {
+        navLinks.classList.toggle('active');
+      });
+
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: 'smooth'
+            });
+            if (navLinks.classList.contains('active')) {
+              navLinks.classList.remove('active');
+            }
+          }
+        });
+      });
+    });
+
+    // Cookie consent handling (same as before, keeps existing functionality)
+    const banner = document.getElementById('cookie-banner');
+    const settings = document.getElementById('cookie-settings');
+    const analyticsCheckbox = document.getElementById('analytics-consent');
+
+    const consent = localStorage.getItem('cookie-consent');
+
+    function loadGA() {
+      const script = document.createElement('script');
+      script.src = "https://www.googletagmanager.com/gtag/js?id=G-5H07SV662K";
+      script.async = true;
+      document.head.appendChild(script);
+
+      gtag('js', new Date());
+      gtag('config', 'G-5H07SV662K');
+    }
+
+    if (!consent) {
+      banner.classList.remove('hidden');
+    } else if (consent === 'analytics') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+      loadGA();
+    }
+
+    document.getElementById('accept-all').onclick = () => {
+      localStorage.setItem('cookie-consent', 'analytics');
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+      loadGA();
+      banner.classList.add('hidden');
+    };
+
+    document.getElementById('manage-settings').onclick = () => {
+      settings.classList.toggle('hidden');
+    };
+
+    document.getElementById('save-settings').onclick = () => {
+      if (analyticsCheckbox.checked) {
+        localStorage.setItem('cookie-consent', 'analytics');
+        gtag('consent', 'update', { analytics_storage: 'granted' });
+        loadGA();
+      } else {
+        localStorage.setItem('cookie-consent', 'none');
+      }
+      banner.classList.add('hidden');
+    };
+  </script>
+</body>
+</html>
