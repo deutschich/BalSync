@@ -94,6 +94,10 @@ public class BalSyncPlugin extends JavaPlugin {
                     () -> updateChecker.checkForUpdates(), updateCheckInterval, updateCheckInterval);
         }
 
+        // Register command executor and tab completer
+        getCommand("balsync").setExecutor(new BalSyncCommand(this, balanceManager));
+        getCommand("balsync").setTabCompleter(new BalSyncTabCompleter(this));
+
         logger.info("BalSync v" + getDescription().getVersion() + " enabled successfully!");
         logger.info("The Official Version of BalSync is by User404_ (or deutschich on GitHub)");
         logger.info("Other Copys may not be safe!");

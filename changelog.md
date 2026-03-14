@@ -3,6 +3,13 @@
 ## New Feature: Update Checker
 >**Update Checker**: BalSync now automatically checks for new versions on Modrinth. When an update is available and compatible with your server, players with the `balsync.update.notify` permission (OP by default) will receive a clickable notification upon joining. You can disable this feature in `config.yml` (`settings.check-for-updates: false`).
 
+## New Feature: Tab Completion for /balsync
+
+>The main command now supports tab completion!
+>- Type `/balsync ` and press Tab to see all available subcommands: `reload`, `save`, `load`, `status`, `backup`, `backups`, `rollback`.
+>- For the `rollback` subcommand, it will suggest existing backup filenames and online player names, making balance restoration faster and easier.
+>- Only players with the `balsync.admin` permission will see the suggestions.
+
 ## New Feature: Rollback from Backups
 >
 >BalSync now allows you to restore player balances from previously created backup files!
